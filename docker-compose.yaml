@@ -1,0 +1,14 @@
+services:
+  funny--rater:
+    container_name: funny-rater
+    image: funny-rater
+    develop:
+      watch:
+        - action: sync
+          path: /src
+          target: /app
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3001
