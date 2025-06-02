@@ -3,6 +3,8 @@ import { deployCommands } from "./deploy-commands";
 import { commands } from "./commands/lib";
 import { config } from "./config";
 
+// import { evalMessage } from "./util/evaluateMessage";
+
 const CLIENT = new Client({
     intents: [
         "Guilds", 
@@ -20,8 +22,9 @@ CLIENT.once("ready", async () => {
     const guilds = await CLIENT.guilds.fetch();
     for (const [guildId] of guilds) {
         await deployCommands({ guildId });
-        console.log(`Commands deployed for guild: ${guildId}`);
     }
+
+
 });
 
 CLIENT.on("guildCreate", async (guild) => {
@@ -41,13 +44,22 @@ CLIENT.on(
     }
 );
 
-CLIENT.on(
-    "messageCreate",
-    async (message) => {
-        if (message.author.bot) return;
-        console.log(message.content)
-        console.log(message.author)
-    }
-)
+// CLIENT.on(
+//     "messageCreate",
+//     async (message) => {
+//         if (message.author.bot) return;
+
+//         if (!await isFunny(message.content)) {
+//             console.log("Message not funny. Not evaluating.")
+//             return
+//         } else {
+//         console.log("Passed Funny check")
+//         }
+
+//         let response = await evalMessage(message.content, "null");
+//         if (!response) return;
+//         message.reply((response).explanation)
+//     }
+// )
 
 CLIENT.login(config.DISCORD_TOKEN);

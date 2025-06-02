@@ -1,9 +1,44 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ApplicationCommandType, ContextMenuCommandBuilder, MessageContextMenuCommandInteraction, messageLink, SlashCommandBuilder } from "discord.js";
+import { evalMessage } from "../util/evaluateMessage";
 
-export const data = new SlashCommandBuilder()
-    .setName("rate")
-    .setDescription("Shows your rating");
+import { fetchImageAsBase64 } from "../util/fetchImage";
+import { captionImage } from "../util/captionImage";
 
-export async function execute(interaction: CommandInteraction) {
-    return interaction.reply("You're not funny little bro.");
+export const data = new ContextMenuCommandBuilder()
+    .setName("ratefunny")
+    .setType(ApplicationCommandType.Message);
+
+
+export async function execute(interaction: MessageContextMenuCommandInteraction) {
+        await interaction.deferReply(); // <-- Add this line
+    // The message being right-clicked is available as interaction.targetMessage
+    let message = interaction.targetMessage
+    let content = message.content;
+    if (message.author.bot) {
+        return interaction.editReply({
+            content: `❓<@${interaction.user.id}> bruh❓ you really thought I would rate that?`,
+            allowedMentions: { users: [interaction.user.id]}
+        })
+    }
+
+    // Check for image attachment
+    const imageAttachment = message.attachments.find(att => att.contentType?.startsWith("image/"));
+
+    let imageCaption = "";
+    if (imageAttachment) {
+        const base64 = await fetchImageAsBase64(imageAttachment.url);
+        imageCaption = await captionImage(base64) || "";
+    }
+
+    // Combine image caption with message content for evaluation
+    let combinedContent = content;
+    if (imageCaption) {
+        combinedContent += `\n[Image]: ${imageCaption}`;
+    }
+
+    console.log("\n\nImage Caption: ", imageCaption, "\n\n")
+
+    let response = await evalMessage(combinedContent, "null");
+
+    return interaction.editReply(response?.explanation);
 }

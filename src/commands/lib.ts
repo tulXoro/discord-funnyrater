@@ -4,5 +4,5 @@ import * as rate from "./rate";
 
 export const commands = {
     help,
-    rate
+    ratefunny: rate
 }
