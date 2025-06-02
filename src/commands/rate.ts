@@ -38,7 +38,10 @@ export async function execute(interaction: MessageContextMenuCommandInteraction)
 
     console.log("\n\nImage Caption: ", imageCaption, "\n\n")
 
-    let response = await evalMessage(combinedContent, "null");
+    let response = await evalMessage(combinedContent, message.author.id);
 
-    return interaction.editReply(response?.explanation);
+    return interaction.editReply({
+    content: `${response?.explanation} <@${message.author.id}>`,
+    allowedMentions: { users: [message.author.id] }
+});
 }

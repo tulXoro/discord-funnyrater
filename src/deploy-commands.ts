@@ -12,7 +12,6 @@ type DeployCommandsProps = {
 
 export async function deployCommands({ guildId }: DeployCommandsProps) {
     try {
-    console.log("Started refreshing application (/) commands.");
 
     await rest.put(
         Routes.applicationGuildCommands(config.DISCORD_CLIENT_ID, guildId),
@@ -20,10 +19,7 @@ export async function deployCommands({ guildId }: DeployCommandsProps) {
         body: commandsData,
         }
     );
-
-    console.log("Successfully reloaded application (/) commands.");
     } catch (error) {
     console.error(error);
     }
-    console.log("Commands loaded")
 }
