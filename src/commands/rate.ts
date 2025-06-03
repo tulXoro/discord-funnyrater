@@ -9,13 +9,15 @@ export const data = new ContextMenuCommandBuilder()
     .setType(ApplicationCommandType.Message);
 
 export async function execute(interaction: MessageContextMenuCommandInteraction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply();
     let message = interaction.targetMessage;
     let content = message.content;
 
     if (message.author.bot) {
-        return interaction.editReply({
+        await interaction.deleteReply();
+        return interaction.followUp({
             content: `❓<@${interaction.user.id}> bruh❓ you really thought I would rate that?`,
+            ephemeral: true,
             allowedMentions: { users: [interaction.user.id] }
         });
     }
@@ -23,8 +25,10 @@ export async function execute(interaction: MessageContextMenuCommandInteraction)
     // Check if message was already rated
     const existingMessage = await db.findMessageByDiscordId(message.id);
     if (existingMessage) {
-        return interaction.editReply({
+        await interaction.deleteReply();
+        return interaction.followUp({
             content: `This message was already rated with a score of ${existingMessage.score}. You aren't slick.`,
+            ephemeral: true,
             allowedMentions: { users: [message.author.id] }
         });
     }
@@ -45,7 +49,11 @@ export async function execute(interaction: MessageContextMenuCommandInteraction)
 
     let response = await evalMessage(combinedContent, message.author.id);
     if (!response) {
-        return interaction.editReply("Failed to evaluate the message.");
+        await interaction.deleteReply();
+        return interaction.followUp({
+            content: "Failed to evaluate the message.",
+            ephemeral: true
+        });
     }
 
     try {
@@ -67,14 +75,17 @@ export async function execute(interaction: MessageContextMenuCommandInteraction)
             await db.createMessageImage(newMessage.id, imageAttachment.url, imageCaption);
         }
 
-        // Delete the ephemeral message and send a new non-ephemeral one
-        await interaction.deleteReply();
-        return interaction.followUp({
+        // Update the loading message with the final evaluation
+        return interaction.editReply({
             content: `${response.explanation} <@${message.author.id}>`,
             allowedMentions: { users: [message.author.id] }
         });
     } catch (error) {
         console.error("Error storing rating:", error);
-        return interaction.editReply("Failed to store the rating.");
+        await interaction.deleteReply();
+        return interaction.followUp({
+            content: "Failed to store the rating.",
+            ephemeral: true
+        });
     }
 }
