@@ -2,6 +2,7 @@ import { CacheType, Client, Interaction } from "discord.js";
 import { deployCommands } from "./deploy-commands";
 import { commands } from "./commands/lib";
 import { config } from "./config";
+import { db } from "./db/schema";
 
 // import { evalMessage } from "./util/evaluateMessage";
 
@@ -18,7 +19,10 @@ const CLIENT = new Client({
 CLIENT.once("ready", async () => {
     console.log("Bot is up and ready to rate your messages.");
 
-        // Deploy commands for every guild the bot is in
+    // Initialize database
+    await db.initialize();
+
+    // Deploy commands for every guild the bot is in
     const guilds = await CLIENT.guilds.fetch();
     for (const [guildId] of guilds) {
         await deployCommands({ guildId });
@@ -34,12 +38,18 @@ CLIENT.on("guildCreate", async (guild) => {
 CLIENT.on(
     "interactionCreate",
     async (interaction: Interaction<CacheType>) => {
-        if (!interaction.isCommand()) {
-            return;
-        }
-        const { commandName } = interaction;
-        if (commands[commandName as keyof typeof commands]) {
-            commands[commandName as keyof typeof commands].execute(interaction);
+        if (interaction.isChatInputCommand()) {
+            const { commandName } = interaction;
+            const command = commands[commandName as keyof typeof commands];
+            if (command && typeof command.execute === "function") {
+                await (command.execute as (i: typeof interaction) => Promise<void>)(interaction);
+            }
+        } else if (interaction.isMessageContextMenuCommand()) {
+            const { commandName } = interaction;
+            const command = commands[commandName as keyof typeof commands];
+            if (command && typeof command.execute === "function") {
+                await (command.execute as (i: typeof interaction) => Promise<void>)(interaction);
+            }
         }
     }
 );
