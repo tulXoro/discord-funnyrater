@@ -2,6 +2,7 @@ import { JUDGE_PROMPT as basePrompt } from "./systemPrompt";
 import { USER_MAP } from "./userMap";
 
 export const evalMessage = async (message: string, author: string) => {
+    // replace any mentions with their respective user if possible
     const replacedMessage = message.replace(/<@!?(\d+)>/g, (match, userId) => {
         return USER_MAP[userId as keyof typeof USER_MAP] || match;
     });
@@ -47,11 +48,6 @@ export const evalMessage = async (message: string, author: string) => {
     } catch (e) {
         console.log(e)
     }
-
-
-
-    // if (!scoreMatch || !explanationMatch) return null;
-
 
 
 };
