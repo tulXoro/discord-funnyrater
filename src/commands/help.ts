@@ -5,5 +5,5 @@ export const data = new SlashCommandBuilder()
     .setDescription("Provides information related to this bot.");
 
 export async function execute(interaction: CommandInteraction) {
-    return interaction.reply("This bot responds to messages and rates them.");
+    return interaction.reply("This bot responds to messages and rates them. Right click a message and let me rate it.");
 }

@@ -2,7 +2,10 @@ import { JUDGE_PROMPT as basePrompt } from "./systemPrompt";
 import { USER_MAP } from "./userMap";
 
 export const evalMessage = async (message: string, author: string) => {
-    const prompt = basePrompt.replace("{{USER_MESSAGE}}", message).replace("{{AUTHOR}}", USER_MAP[author as keyof typeof USER_MAP]);
+    const replacedMessage = message.replace(/<@!?(\d+)>/g, (match, userId) => {
+        return USER_MAP[userId as keyof typeof USER_MAP] || match;
+    });
+    const prompt = basePrompt.replace("{{USER_MESSAGE}}", replacedMessage).replace("{{AUTHOR}}", USER_MAP[author as keyof typeof USER_MAP]);
 
     const res = await fetch("http://localhost:11434/api/generate", {
         method: "POST",

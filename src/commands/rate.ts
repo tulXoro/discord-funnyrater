@@ -10,14 +10,14 @@ export const data = new ContextMenuCommandBuilder()
 
 
 export async function execute(interaction: MessageContextMenuCommandInteraction) {
-        await interaction.deferReply(); // <-- Add this line
+    await interaction.deferReply(); // <-- Add this line
     // The message being right-clicked is available as interaction.targetMessage
     let message = interaction.targetMessage
     let content = message.content;
     if (message.author.bot) {
         return interaction.editReply({
             content: `❓<@${interaction.user.id}> bruh❓ you really thought I would rate that?`,
-            allowedMentions: { users: [interaction.user.id]}
+            allowedMentions: { users: [interaction.user.id] }
         })
     }
 
@@ -41,7 +41,7 @@ export async function execute(interaction: MessageContextMenuCommandInteraction)
     let response = await evalMessage(combinedContent, message.author.id);
 
     return interaction.editReply({
-    content: `${response?.explanation} <@${message.author.id}>`,
-    allowedMentions: { users: [message.author.id] }
-});
+        content: `${response?.explanation} <@${message.author.id}>`,
+        allowedMentions: { users: [message.author.id] }
+    });
 }

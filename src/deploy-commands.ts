@@ -13,13 +13,13 @@ type DeployCommandsProps = {
 export async function deployCommands({ guildId }: DeployCommandsProps) {
     try {
 
-    await rest.put(
-        Routes.applicationGuildCommands(config.DISCORD_CLIENT_ID, guildId),
-        {
-        body: commandsData,
-        }
-    );
+        await rest.put(
+            Routes.applicationGuildCommands(config.DISCORD_CLIENT_ID, guildId),
+            {
+                body: commandsData,
+            }
+        );
     } catch (error) {
-    console.error(error);
+        console.error(error);
     }
 }
