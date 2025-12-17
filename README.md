@@ -35,8 +35,11 @@ The bot uses:
 - [Docker](https://www.docker.com/) (for Docker installation)
 - [NodeJS](https://nodejs.org) v23 (for manual installation)
 - [Discord Developer Account](https://discord.com/developers/docs/intro)
-- [PostgreSQL](https://www.postgresql.org/) (if running database separately)
+- [PostgreSQL](https://www.postgresql.org/) (if running database 
+y)
 - NVIDIA GPU with CUDA support (recommended for Ollama)
+
+*Note*: After pulling, you may want to customize the prompts. They can be found in `util\systemPrompt.ts` and you can tailor it to specific discord users with `util\userMap.ts`.
 
 ### Docker (recommended)
 
