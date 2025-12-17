@@ -2,13 +2,5 @@
  * If you are pulling this project, change the Discord Ids to the names you want associated to them.
  */
 export const USER_MAP = {
-    "143928980129447936": "Tim",
-    "231627701641805835": "Adam",
-    "125356507771568128": "Joshua",
-    "140339395386540032": "Brandyn",
-    "375448786484461578": "Jorge",
-    "455531295183994891": "Jesus",
-    "179338042182467584": "Jeremy",
-    "149312173695434752": "Jacob",
-    "1378608744744751265": "Funny Rater"
+
 }
